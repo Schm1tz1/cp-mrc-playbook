@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: replica-placement
+data:
+  2dc-observers.json: |
+    {
+      "version": 2,
+      "replicas": [
+        {
+          "count": 2,
+          "constraints": {
+            "rack": "dc1"
+          }
+        },
+        {
+          "count": 2,
+          "constraints": {
+            "rack": "dc2"
+          }
+        }
+      ],
+      "observers": [
+        {
+          "count": 1,
+          "constraints": {
+            "rack": "dc1"
+          }
+        },
+        {
+          "count": 1,
+          "constraints": {
+            "rack": "dc2"
+          }
+        }
+      ],
+      "observerPromotionPolicy": "under-min-isr"
+    }
+  2dc-mrc-observers.json: |
+    {
+      "version": 2,
+      "replicas": [
+        {
+          "count": 1,
+          "constraints": {
+            "rack": "dc1-a"
+          }
+        },
+        {
+          "count": 1,
+          "constraints": {
+            "rack": "dc1-b"
+          }
+        },
+        {
+          "count": 1,
+          "constraints": {
+            "rack": "dc2-a"
+          }
+        },
+        {
+          "count": 1,
+          "constraints": {
+            "rack": "dc2-b"
+          }
+        }
+      ],
+      "observers": [
+        {
+          "count": 1,
+          "constraints": {
+            "rack": "dc1-c"
+          }
+        },
+        {
+          "count": 1,
+          "constraints": {
+            "rack": "dc2-c"
+          }
+        }
+      ],
+      "observerPromotionPolicy": "under-min-isr"
+    }

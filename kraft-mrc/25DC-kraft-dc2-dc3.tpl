@@ -1,0 +1,134 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: KRaftController
+metadata:
+  name: kraftcontroller
+  namespace: dc2
+  annotations:
+    platform.confluent.io/broker-id-offset: '920'
+spec:
+  replicas: 1
+  clusterID: CLUSTER_ID
+  controllerQuorumVoters:
+    - brokerEndpoint: kraftcontroller-0-internal.dc1:9074
+      nodeId: 910
+    - brokerEndpoint: kraftcontroller-0-internal.dc2:9074
+      nodeId: 920
+    - brokerEndpoint: kraftcontroller-0-internal.dc3:9074
+      nodeId: 930
+  oneReplicaPerNode: true
+  dataVolumeCapacity: 1G
+  podTemplate:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+    podSecurityContext:
+      fsGroup: 1000
+      runAsUser: 1000
+      runAsNonRoot: true
+  image:
+    application: confluentinc/cp-server:7.9.1
+    init: confluentinc/confluent-init-container:2.11.1
+  mountedVolumes:
+    volumes:
+      - name: placements
+        configMap:
+          name: replica-placement
+    volumeMounts:
+      - name: placements
+        mountPath: /mnt/placements
+        readOnly: true
+  configOverrides:
+    server:
+      - config.providers=file,dir,env
+      - config.providers.dir.class=org.apache.kafka.common.config.provider.DirectoryConfigProvider
+      - config.providers.env.class=org.apache.kafka.common.config.provider.EnvVarConfigProvider
+      - config.providers.file.class=org.apache.kafka.common.config.provider.FileConfigProvider
+      - confluent.metadata.topic.replication.factor=4
+      - confluent.metadata.topic.min.insync.replicas=3
+      - confluent.balancer.topic.replication.factor=4
+      - confluent.security.event.logger.exporter.kafka.topic.replicas=4
+      - default.replication.factor=4
+      - min.insync.replicas=3
+      - offsets.topic.replication.factor=4
+      - offsets.topic.min.isr=3
+      - transaction.state.log.replication.factor=4
+      - transaction.state.log.min.isr=3
+      - replica.selector.class=org.apache.kafka.common.replica.RackAwareReplicaSelector
+      - confluent.link.metadata.topic.replication.factor=4
+      - confluent.link.metadata.topic.min.isr=3
+      - confluent.license.topic.replication.factor=4
+      - confluent.license.topic.min.isr=3
+      - confluent.cluster.link.metadata.topic.replication.factor=4
+      - confluent.cluster.link.metadata.topic.min.isr=3
+      - confluent.log.placement.constraints=${dir:/mnt/placements:2dc-observers.json}
+      - confluent.offsets.topic.placement.constraints=${dir:/mnt/placements:2dc-observers.json}
+      - confluent.transaction.state.log.placement.constraints=${dir:/mnt/placements:2dc-observers.json}  
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: KRaftController
+metadata:
+  name: kraftcontroller
+  namespace: dc3
+  annotations:
+    platform.confluent.io/broker-id-offset: '930'
+spec:
+  replicas: 1
+  clusterID: CLUSTER_ID
+  controllerQuorumVoters:
+    - brokerEndpoint: kraftcontroller-0-internal.dc1:9074
+      nodeId: 910
+    - brokerEndpoint: kraftcontroller-0-internal.dc2:9074
+      nodeId: 920
+    - brokerEndpoint: kraftcontroller-0-internal.dc3:9074
+      nodeId: 930
+  oneReplicaPerNode: true
+  dataVolumeCapacity: 1G
+  podTemplate:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+    podSecurityContext:
+      fsGroup: 1000
+      runAsUser: 1000
+      runAsNonRoot: true
+  image:
+    application: confluentinc/cp-server:7.9.1
+    init: confluentinc/confluent-init-container:2.11.1
+  mountedVolumes:
+    volumes:
+      - name: placements
+        configMap:
+          name: replica-placement
+    volumeMounts:
+      - name: placements
+        mountPath: /mnt/placements
+        readOnly: true
+  configOverrides:
+    server:
+      - config.providers=file,dir,env
+      - config.providers.dir.class=org.apache.kafka.common.config.provider.DirectoryConfigProvider
+      - config.providers.env.class=org.apache.kafka.common.config.provider.EnvVarConfigProvider
+      - config.providers.file.class=org.apache.kafka.common.config.provider.FileConfigProvider
+      - confluent.metadata.topic.replication.factor=4
+      - confluent.metadata.topic.min.insync.replicas=3
+      - confluent.balancer.topic.replication.factor=4
+      - confluent.security.event.logger.exporter.kafka.topic.replicas=4
+      - default.replication.factor=4
+      - min.insync.replicas=3
+      - offsets.topic.replication.factor=4
+      - offsets.topic.min.isr=3
+      - transaction.state.log.replication.factor=4
+      - transaction.state.log.min.isr=3
+      - replica.selector.class=org.apache.kafka.common.replica.RackAwareReplicaSelector
+      - confluent.link.metadata.topic.replication.factor=4
+      - confluent.link.metadata.topic.min.isr=3
+      - confluent.license.topic.replication.factor=4
+      - confluent.license.topic.min.isr=3
+      - confluent.cluster.link.metadata.topic.replication.factor=4
+      - confluent.cluster.link.metadata.topic.min.isr=3
+      - confluent.log.placement.constraints=${dir:/mnt/placements:2dc-observers.json}
+      - confluent.offsets.topic.placement.constraints=${dir:/mnt/placements:2dc-observers.json}
+      - confluent.transaction.state.log.placement.constraints=${dir:/mnt/placements:2dc-observers.json}
+ 

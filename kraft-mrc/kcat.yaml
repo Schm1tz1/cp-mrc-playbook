@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kcat
+spec:
+  containers:
+  - name: cp-kcat
+    image: confluentinc/cp-kcat:7.9.1
+    command: ['sh', '-c', 'tail -f /dev/null']
+
