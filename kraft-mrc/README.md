@@ -1,8 +1,8 @@
-# CP Stretch Cluster Setups with KRaft
-This Gist contains 3 stretch cluster setups:
-* 2 DC Kafka Cluster with KRaft
-* 2.5 DC AOP Kafka Cluster with KRaft (non-MRC and MRC)
-* 3 DC Kafka Cluster with KRaft
+# KRaft-based MRC and multi-DC setups
+This directory contains 3 stretch cluster setups:
+* 2 DC Kafka Cluster
+* 2.5 DC AOP Kafka Cluster (non-MRC and MRC)
+* 3 DC Kafka Cluster
 
 ## Namespaced Operator Deployments
 For the 3DC and 2.5DC setup you need 3 namespaces, for 2DC you need 2 namespaces:

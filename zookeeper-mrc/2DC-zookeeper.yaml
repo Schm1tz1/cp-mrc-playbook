@@ -1,0 +1,76 @@
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: Zookeeper
+metadata:
+  name: zookeeper
+  namespace: dc1
+spec:
+  replicas: 3
+  oneReplicaPerNode: true
+  image:
+    application: confluentinc/cp-zookeeper:7.9.1
+    init: confluentinc/confluent-init-container:2.11.1  
+  license:
+    globalLicense: true
+  dataVolumeCapacity: 1Gi
+  logVolumeCapacity: 1Gi
+  configOverrides:
+    server:
+      - 4lw.commands.whitelist=*
+    peers:
+      - server.0=zookeeper-0.zookeeper.dc1:2888:3888
+      - server.1=zookeeper-1.zookeeper.dc1:2888:3888
+      - server.2=zookeeper-2.zookeeper.dc1:2888:3888
+      - server.10=zookeeper-0.zookeeper.dc2:2888:3888
+      - server.11=zookeeper-1.zookeeper.dc2:2888:3888
+      - server.12=zookeeper-2.zookeeper.dc2:2888:3888
+      - server.99=zookeeperobserver.zookeeper.default:2888:3888:observer
+      - group.0=0:1:2
+      - group.1=10:11:12
+      - group.99=99
+      - weight.0=1
+      - weight.1=1
+      - weight.2=1
+      - weight.10=1
+      - weight.11=1
+      - weight.12=1
+      - weight.99=0
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: Zookeeper
+metadata:
+  name: zookeeper
+  namespace: dc2
+  annotations:
+    platform.confluent.io/zookeeper-myid-offset: "10"
+spec:
+  replicas: 3
+  oneReplicaPerNode: true
+  image:
+    application: confluentinc/cp-zookeeper:7.9.1
+    init: confluentinc/confluent-init-container:2.11.1  
+  license:
+    globalLicense: true
+  dataVolumeCapacity: 1Gi
+  logVolumeCapacity: 1Gi
+  configOverrides:
+    server:
+      - 4lw.commands.whitelist=*
+    peers:
+      - server.0=zookeeper-0.zookeeper.dc1:2888:3888
+      - server.1=zookeeper-1.zookeeper.dc1:2888:3888
+      - server.2=zookeeper-2.zookeeper.dc1:2888:3888
+      - server.10=zookeeper-0.zookeeper.dc2:2888:3888
+      - server.11=zookeeper-1.zookeeper.dc2:2888:3888
+      - server.12=zookeeper-2.zookeeper.dc2:2888:3888
+      - server.99=zookeeperobserver.zookeeper.default:2888:3888:observer
+      - group.0=0:1:2
+      - group.1=10:11:12
+      - group.99=99
+      - weight.0=1
+      - weight.1=1
+      - weight.2=1
+      - weight.10=1
+      - weight.11=1
+      - weight.12=1
+      - weight.99=0

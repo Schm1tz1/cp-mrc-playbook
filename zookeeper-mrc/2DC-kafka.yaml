@@ -1,38 +1,42 @@
 ---
 apiVersion: platform.confluent.io/v1beta1
-kind: KRaftController
+kind: Kafka
 metadata:
-  name: kraftcontroller
+  name: kafka
   namespace: dc1
   annotations:
-    platform.confluent.io/broker-id-offset: '910'
+    platform.confluent.io/broker-id-offset: "100"
 spec:
   replicas: 2
-  clusterID: ZjczNWY5ZjItZTA3OS00Nw
-  controllerQuorumVoters:
-    - brokerEndpoint: kraftcontroller-0-internal.dc1:9074
-      nodeId: 910
-    - brokerEndpoint: kraftcontroller-1-internal.dc1:9074
-      nodeId: 911
-    - brokerEndpoint: kraftcontroller-0-internal.dc2:9074
-      nodeId: 920
   oneReplicaPerNode: true
-  dataVolumeCapacity: 1G
+  license:
+    globalLicense: true
+  image:
+    application: confluentinc/cp-server:7.9.1
+    init: confluentinc/confluent-init-container:2.11.1
+  dataVolumeCapacity: 10Gi
   podTemplate:
     resources:
       requests:
-        cpu: 100m
-        memory: 256Mi
+        cpu: 200m
+        memory: 512Mi
     podSecurityContext:
       fsGroup: 1000
       runAsUser: 1000
       runAsNonRoot: true
-  image:
-    application: confluentinc/cp-server:7.9.1
-    init: confluentinc/confluent-init-container:2.11.1
+  dependencies:
+    zookeeper:
+      # authentication:
+      #   jaasConfig:
+      #     secretRef: credential
+        # type: digest
+      endpoint: zookeeper.dc1.svc.cluster.local:2181,zookeeper.dc2.svc.cluster.local:2181/mrc
+      # This endpoint is to ensure we don't use the auto-generated kafka-namespace znode but mrc. Operator checks for >1 endpoints and uses
+      # the znode name after /<name>. In case we can ensure consistent naeming before/after migration, this workaround in not required.
   configOverrides:
     server:
       - confluent.consumer.lag.emitter.enabled=true
+      - confluent.consumer.lag.emitter.interval.ms=10000
       - broker.rack=dc1
       - config.providers=file,dir,env
       - config.providers.dir.class=org.apache.kafka.common.config.provider.DirectoryConfigProvider
@@ -57,39 +61,43 @@ spec:
       - confluent.cluster.link.metadata.topic.min.isr=3
 ---
 apiVersion: platform.confluent.io/v1beta1
-kind: KRaftController
+kind: Kafka
 metadata:
-  name: kraftcontroller
+  name: kafka
   namespace: dc2
   annotations:
-    platform.confluent.io/broker-id-offset: '920'
+    platform.confluent.io/broker-id-offset: "200"
 spec:
-  replicas: 1
-  clusterID: ZjczNWY5ZjItZTA3OS00Nw
-  controllerQuorumVoters:
-    - brokerEndpoint: kraftcontroller-0-internal.dc1:9074
-      nodeId: 910
-    - brokerEndpoint: kraftcontroller-1-internal.dc1:9074
-      nodeId: 911
-    - brokerEndpoint: kraftcontroller-0-internal.dc2:9074
-      nodeId: 920
+  replicas: 2
   oneReplicaPerNode: true
-  dataVolumeCapacity: 1G
+  license:
+    globalLicense: true
+  image:
+    application: confluentinc/cp-server:7.9.1
+    init: confluentinc/confluent-init-container:2.11.1
+  dataVolumeCapacity: 10Gi
   podTemplate:
     resources:
       requests:
-        cpu: 100m
-        memory: 256Mi
+        cpu: 200m
+        memory: 512Mi
     podSecurityContext:
       fsGroup: 1000
       runAsUser: 1000
       runAsNonRoot: true
-  image:
-    application: confluentinc/cp-server:7.9.1
-    init: confluentinc/confluent-init-container:2.11.1
+  dependencies:
+    zookeeper:
+      # authentication:
+      #   jaasConfig:
+      #     secretRef: credential
+        # type: digest
+      endpoint: zookeeper.dc1.svc.cluster.local:2181,zookeeper.dc2.svc.cluster.local:2181/mrc
+      # This endpoint is to ensure we don't use the auto-generated kafka-namespace znode but mrc. Operator checks for >1 endpoints and uses
+      # the znode name after /<name>. In case we can ensure consistent naeming before/after migration, this workaround in not required.
   configOverrides:
     server:
       - confluent.consumer.lag.emitter.enabled=true
+      - confluent.consumer.lag.emitter.interval.ms=10000
       - broker.rack=dc2
       - config.providers=file,dir,env
       - config.providers.dir.class=org.apache.kafka.common.config.provider.DirectoryConfigProvider

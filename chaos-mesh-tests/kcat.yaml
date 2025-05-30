@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kcat
+spec:
+  containers:
+  - name: cp-kcat
+    image: confluentinc/cp-kcat:7.9.1
+    command: ['sh', '-c', 'tail -f /dev/null']
+    volumeMounts:
+      - name: kcat-configs
+        mountPath: /mnt/configs
+  volumes:
+    - name: kcat-configs
+      configMap:
+        defaultMode: 420
+        name: kcat-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kcat-config
+data:
+  kcat-cp-ext-ingress.conf: |
+    bootstrap.servers=kafka.k8s.internal.schmitzi.net:443
+    security.protocol=SSL
+  kcat-cp-ext.conf: |
+    bootstrap.servers=kafka.dc1:9092
+  kcat-cp-int.conf: |
+    bootstrap.servers=kafka.dc1:9071
+  kcat-cp-rep-ingress.conf: |
+    bootstrap.servers=kafka-dc1-0.k8s.internal.schmitzi.net:443
+    security.protocol=SSL
+  kcat-cp-rep.conf: |
+    bootstrap.servers=kafka.dc1:9071

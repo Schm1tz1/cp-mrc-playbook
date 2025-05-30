@@ -1,0 +1,9 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: KafkaTopic
+metadata:
+  name: test
+  namespace: dc1
+spec:
+  partitionCount: 12
+  configs:
+    cleanup.policy: "delete"

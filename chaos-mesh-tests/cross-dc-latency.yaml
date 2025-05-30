@@ -1,0 +1,82 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: Workflow
+metadata:
+  name: 'cross-dc-latency'
+spec:
+  entry: entry
+  templates:
+    - name: entry
+      templateType: Serial
+      children:
+        - latency10
+        - latency30
+        - latency100
+        - latency300
+    - name: latency10
+      templateType: NetworkChaos
+      deadline: 5m
+      networkChaos:
+        action: delay
+        target:
+          mode: all
+        selector:
+          namespaces:
+            - dc1
+            - dc2
+          labelSelectors:
+            clusterId: dc1
+            clusterId: dc2
+        mode: all
+        delay:
+          latency: '10ms'
+    - name: latency30
+      templateType: NetworkChaos
+      deadline: 5m
+      networkChaos:
+        action: delay
+        target:
+          mode: all
+        selector:
+          namespaces:
+            - dc1
+            - dc2
+          labelSelectors:
+            clusterId: dc1
+            clusterId: dc2
+        mode: all
+        delay:
+          latency: '30ms'
+    - name: latency100
+      templateType: NetworkChaos
+      deadline: 5m
+      networkChaos:
+        action: delay
+        target:
+          mode: all
+        selector:
+          namespaces:
+            - dc1
+            - dc2
+          labelSelectors:
+            clusterId: dc1
+            clusterId: dc2
+        mode: all
+        delay:
+          latency: '100ms'
+    - name: latency300
+      templateType: NetworkChaos
+      deadline: 5m
+      networkChaos:
+        action: delay
+        target:
+          mode: all
+        selector:
+          namespaces:
+            - dc1
+            - dc2
+          labelSelectors:
+            clusterId: dc1
+            clusterId: dc2
+        mode: all
+        delay:
+          latency: '300ms'
