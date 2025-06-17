@@ -1,0 +1,15 @@
+kind: NetworkChaos
+apiVersion: chaos-mesh.org/v1alpha1
+metadata:
+  namespace: dc1
+  name: mrc-dc1-partition
+  annotations:
+    experiment.chaos-mesh.org/pause: 'false'
+spec:
+  selector:
+    namespaces:
+      - dc1
+  mode: all
+  action: partition
+  duration: 5m
+  direction: both
