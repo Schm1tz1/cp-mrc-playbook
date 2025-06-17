@@ -4,7 +4,7 @@ kubectl apply -f ./test-topic.yaml
 kubectl apply -f ./kcat.yaml
 kubectl wait --for=condition=ready pod kcat
 
-ITERS=100000
+ITERS=10000
 
 for i in $(seq 1 $ITERS); do
     echo "Testdata iteration ${i} of ${ITERS}..."

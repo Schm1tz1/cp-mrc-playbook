@@ -1,0 +1,58 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: mrc-latency-dc1
+spec:
+  action: delay
+  mode: one
+  selector:
+    namespaces:
+      - dc1
+  target:
+    mode: all
+    selector:
+      namespaces:
+        - dc2
+        - dc3
+  delay:
+    latency: "100ms"
+
+---
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: mrc-latency-dc2
+spec:
+  action: delay
+  mode: one
+  selector:
+    namespaces:
+      - dc2
+  target:
+    mode: all
+    selector:
+      namespaces:
+        - dc1
+        - dc3
+  delay:
+    latency: "100ms"
+
+---
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: mrc-latency-dc3
+spec:
+  action: delay
+  mode: one
+  selector:
+    namespaces:
+      - dc3
+  target:
+    mode: all
+    selector:
+      namespaces:
+        - dc1
+        - dc2
+  delay:
+    latency: "100ms"
