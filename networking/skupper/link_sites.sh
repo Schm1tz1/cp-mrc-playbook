@@ -2,7 +2,7 @@
 
 source contexts.env
 MAX_LINKS=${#CREATE_LINKS[@]}
-MAX_REDEMPTIONS=$(($MAX_LINKS*10))
+MAX_REDEMPTIONS=$(($MAX_LINKS*5))
 NAMESPACE="confluent"
 
 for i in ${CREATE_LINKS[@]}; do
@@ -21,6 +21,9 @@ spec:
   redemptionsAllowed: ${MAX_REDEMPTIONS}  # default 1
   expirationWindow: 60m        # default 15m
 EOF
+
+  kubectl get accessgrants -A --context="${TO_CTX}" -o wide
+  echo
 
   # Extract Access Grant details
   URL="$(kubectl --context ${TO_CTX} -n ${NAMESPACE} get accessgrant grant-${TO_CTX} -o template --template '{{ .status.url }}')"
@@ -41,6 +44,11 @@ $(printf '%s\n' "$CA_RAW" | sed 's/^/    /')
   url: "$(printf '%s' "$URL")"
 EOF
 
+  echo "*** Access token status ($FROM_CTX):"
+  kubectl get accesstokens -A --context="${FROM_CTX}" -o wide
+  echo
+
+  echo "*** Link status ($FROM_CTX):"
   kubectl get links -A --context="${FROM_CTX}" -o wide
   echo
 
