@@ -1,0 +1,81 @@
+---
+apiVersion: skupper.io/v2alpha1
+kind: Listener
+metadata:
+  name: kraftcontroller-930
+  namespace: confluent
+spec:
+  port: 9074
+  host: kraftcontroller-930
+  routingKey: kraftcontroller-930
+---
+apiVersion: skupper.io/v2alpha1
+kind: Listener
+metadata:
+  name: kraftcontroller-910
+  namespace: confluent
+spec:
+  port: 9074
+  host: kraftcontroller-910
+  routingKey: kraftcontroller-910
+---
+apiVersion: skupper.io/v2alpha1
+kind: Connector
+metadata:
+  name: kraftcontroller
+  namespace: confluent
+spec:
+  routingKey: kraftcontroller-920
+  port: 9074
+  selector: app=kraftcontroller
+---
+apiVersion: platform.confluent.io/v1beta1
+kind: KRaftController
+metadata:
+  name: kraftcontroller
+  namespace: confluent
+  annotations:
+    platform.confluent.io/broker-id-offset: '920'
+spec:
+  replicas: 1
+  clusterID: ZjczNWY5ZjItZTA3OS00Nw
+  controllerQuorumVoters:
+    - brokerEndpoint: kraftcontroller-0-internal:9074
+      nodeId: 920
+    - brokerEndpoint: kraftcontroller-930:9074
+      nodeId: 930
+    - brokerEndpoint: kraftcontroller-910:9074
+      nodeId: 910
+  oneReplicaPerNode: true
+  dataVolumeCapacity: 1G
+  podTemplate:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+    podSecurityContext:
+      fsGroup: 1000
+      runAsUser: 1000
+      runAsNonRoot: true
+  image:
+    application: confluentinc/cp-server:7.9.1
+    init: confluentinc/confluent-init-container:2.11.1
+  configOverrides:
+    server:
+      - default.replication.factor=3
+      - min.insync.replicas=2
+      - confluent.metadata.topic.replication.factor=3
+      - confluent.metadata.topic.min.insync.replicas=2
+      - confluent.balancer.topic.replication.factor=3
+      - offsets.topic.replication.factor=3
+      - offsets.topic.min.isr=2
+      - transaction.state.log.replication.factor=3
+      - confluent.link.metadata.topic.replication.factor=3
+      - confluent.tier.metadata.replication.factor=3
+      - confluent.license.topic.replication.factor=3
+      - confluent.cluster.link.metadata.topic.replication.factor=3
+      - confluent.metadata.topic.min.insync.replicas=2
+      - confluent.security.event.logger.exporter.kafka.topic.replicas=2
+      - event.logger.exporter.kafka.topic.replicas=2
+      - replica.selector.class=org.apache.kafka.common.replica.RackAwareReplicaSelector
+      - broker.rack=dc1

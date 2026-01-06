@@ -21,7 +21,7 @@ do
     kubectl apply -f https://skupper.io/v2/install.yaml --context="${CTX}"
 
     # Deploy Site
-    cat <<EOF | envsubst |kubectl apply --context="${CTX}" -f -
+    cat <<EOF | envsubst | kubectl apply --context="${CTX}" -f -
 apiVersion: skupper.io/v2alpha1
 kind: Site
 metadata:

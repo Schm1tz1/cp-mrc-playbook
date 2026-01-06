@@ -24,7 +24,14 @@ Skupper is an over-the-top, multi-platform application interconnect. Skupper mak
 ```
 
 * For every service/port combination to be exposed in a differect Skupper network, we need to set up a connector (exposes local service) and a listener (remote endpoint that connects to a connector) that conect to each other according to routing keys. Also see https://github.com/skupperproject/skupper-example-kafka/tree/main for Kafka, more details on connectors here: https://skupperproject.github.io/refdog/resources/connector.html
-* Example listener/connector deployment (WIP):
+* Example listener/connector deployment (hard-coded) that will install all the conenctors and listeners:
 ```shell
-# This is WIP ...
+# This is hard-coded 3DC deployment - ideally this is solved via loops or templates/helm
+kubectl apply -f 3DC-kraft-DC1.yaml --context k3s-default
+kubectl apply -f 3DC-kraft-DC2.yaml --context k3s-split
+kubectl apply -f 3DC-kraft-DC3.yaml --context k3s-kronos
+```
+The listners and connectors will be in status 'OK' once the pod is up an running. You can check for the listener/conenctor status via:
+```shell
+./check_listeners.sh
 ```
