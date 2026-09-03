@@ -9,7 +9,7 @@ spec:
   oneReplicaPerNode: true
   image:
     application: confluentinc/cp-zookeeper:7.9.1
-    init: confluentinc/confluent-init-container:2.11.1  
+    init: confluentinc/confluent-init-container:2.11.2  
   license:
     globalLicense: true
   dataVolumeCapacity: 1Gi
@@ -48,7 +48,7 @@ spec:
   oneReplicaPerNode: true
   image:
     application: confluentinc/cp-zookeeper:7.9.1
-    init: confluentinc/confluent-init-container:2.11.1  
+    init: confluentinc/confluent-init-container:2.11.2  
   license:
     globalLicense: true
   dataVolumeCapacity: 1Gi

@@ -27,9 +27,9 @@ Skupper is an over-the-top, multi-platform application interconnect. Skupper mak
 * Example listener/connector deployment (hard-coded) that will install all the conenctors and listeners:
 ```shell
 # This is hard-coded 3DC deployment - ideally this is solved via loops or templates/helm
-kubectl apply -f 3DC-kraft-DC1.yaml --context k3s-default
-kubectl apply -f 3DC-kraft-DC2.yaml --context k3s-split
-kubectl apply -f 3DC-kraft-DC3.yaml --context k3s-kronos
+kubectl apply -f 3DC-kraft-DC1.yaml --context k8s-1
+kubectl apply -f 3DC-kraft-DC2.yaml --context k8s-2
+kubectl apply -f 3DC-kraft-DC3.yaml --context k8s-3
 ```
 The listners and connectors will be in status 'OK' once the pod is up an running. You can check for the listener/conenctor status via:
 ```shell

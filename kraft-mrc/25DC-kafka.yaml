@@ -58,6 +58,7 @@ spec:
       - confluent.metadata.topic.min.insync.replicas=3
       - confluent.balancer.topic.replication.factor=4
       - confluent.security.event.logger.exporter.kafka.topic.replicas=4
+      - num.replica.fetchers=2
       - default.replication.factor=4
       - min.insync.replicas=3
       - offsets.topic.replication.factor=4
